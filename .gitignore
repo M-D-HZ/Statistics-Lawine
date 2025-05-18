@@ -126,3 +126,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# R ignores
+.RData
+.Rhistory
+
