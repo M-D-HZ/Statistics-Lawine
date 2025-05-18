@@ -24,7 +24,9 @@ Using R for all statistical computations, this study demonstrates rigorous hypot
 
 = Question 1: Avalanche risk and temperature
 
-The investigation began with exploratory data analysis to understand the distributions of both temperature and avalanche risk (1-10 scale). Histograms revealed a bimodal distribution for both variables (Figure 1A-B), suggesting the presence of two distinct weather patterns in the Alpine region. While the Shapiro-Wilk tests (temperature: W = 0.997, p = 0.601; avalanche risk: W = 0.997, p = 0.730) failed to reject normality due to the large sample size (n=450), the visual bimodality remained a concern for parametric tests.
+The investigation began with exploratory data analysis to understand the distributions of both temperature and avalanche risk (1-10 scale). Histograms revealed a bimodal distribution for both variables (Figure 1A-B), suggesting the presence of two distinct weather patterns in the Alpine region.
+The bimodal distributions (Fig. 1A-B) indicate two distinct weather regimes, violating Pearson's assumption of linearity. Spearman's correlation was chosen as it measures monotonic rather than strictly linear relationships, making it robust to such distributional quirks.
+While the Shapiro-Wilk tests (temperature: W = 0.997, p = 0.601; avalanche risk: W = 0.997, p = 0.730) failed to reject normality due to the large sample size (n=450), the visual bimodality remained a concern for parametric tests.
 #figure(
   image("images/Lawine1.png", width: 80%),
   caption: [figure 1A & 1B],
@@ -68,6 +70,8 @@ The diagnostic plots, however, revealed two important considerations:
 
  2.   Evidence of heteroscedasticity (Breusch-Pagan p = 5.29e-09)
 
+While heteroscedasticity (Breusch-Pagan p < 0.001) suggests uneven variance across altitudes, the large sample size (n=250) ensures the regression coefficients remain unbiased. Prediction intervals, however, may be less reliable at extreme altitudes.
+
 #figure(
   image("images/temperatuur2.png")
 )
@@ -91,3 +95,44 @@ Despite this improvement, the linear model was retained as the primary model bec
 #figure(
   image("images/temperatuur4.png")
 )
+
+= Question 3: Windspeed
+
+The final research question examined whether the average absolute wind speed at a particular Alpine location significantly exceeded 14 km/h, a critical threshold for safety considerations.
+The 14 km/h threshold corresponds to Beaufort Scale Force 4, where wind begins to lift loose snow - a key factor in avalanche formation. Our finding that speeds average 16.13 km/h (CI: 15.47+) suggests persistent elevated risk.
+The analysis focused on absolute wind speed values (n=250), accounting for the bidirectional nature of the wind measurements (positive and negative values indicating direction).
+
+The statistical approach employed a one-sample t-test with the following hypotheses:
+
+    Null hypothesis (H₀): μ ≤ 14 km/h
+
+    Alternative hypothesis (H₁): μ > 14 km/h
+
+This one-sided test was chosen because the organization specifically wanted to determine if wind speeds were greater than the 14 km/h threshold, not just different.
+
+The t-test yielded highly significant results:
+
+    Sample mean: 16.13 km/h (SD not provided)
+
+    Test statistic: t(249) = 5.33
+
+    p-value: 1.125 × 10⁻⁷
+
+    95% CI lower bound: 15.47 km/h
+
+The extremely small p-value (<< 0.001) provides strong evidence to reject the null hypothesis. We can conclude with high confidence that the true mean absolute wind speed exceeds 14 km/h. The confidence interval suggests the actual mean likely falls between 15.47 km/h and higher values.
+
+= Synthesis & Conclusion
+All analyses were conducted in R with the use of R studio, For full reproducibility be sure to check out the #link("https://github.com/M-D-HZ/Statistics-Lawine")[Github Repository] for all the r scripts and dataset (note that the dataset is split based on my student number 20210294).
+    
+This study addressed three critical questions regarding Alpine weather patterns, employing robust statistical methods in R to derive meaningful insights. Below, we synthesize the key findings and their broader implications.
+
+== Avalanche risk and temperature
+While a statistically significant negative correlation (Spearman’s ρ = -0.35, *p* < 0.001) exists between temperature and avalanche risk, the relationship is weak. The linear model’s negligible R² (0.06%) suggests temperature alone is insufficient for reliable avalanche prediction.
+
+== Temperature prediction by altitude
+Altitude proved an excellent predictor of temperature, with a linear model explaining 77.3% of variance (*p* < 0.001). The estimated lapse rate of 0.85°C per 100m aligns with atmospheric theory. Though a quadratic model improved fit slightly (R² = 78.9%), the linear model’s simplicity and interpretability make it preferable for field applications.
+
+== windspeed threshold analysis
+The absolute wind speeds significantly exceeded the 14 km/h safety threshold (M = 16.13 km/h, *p* < 0.001). The 95% CI (15.47, ∞) confirms this finding with high confidence.
+
